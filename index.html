@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset=utf-8>
+  <title>My first three.js app</title>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%
+    }
+  </style>
+</head>
+
+<body>
+  <script src="js/three.js"></script>
+  <script>
+    // Our Javascript will go here.
+    function drawHead(scene) {
+      drawBody(scene);
+      addHeadOutline(scene);
+      addLeftEye(scene);
+      addRightEye(scene);
+      addMouse(scene);
+      addNose(scene);
+      addMustache(scene);
+      drawTummy(scene);
+      drawNeck(scene);
+      drawRing(scene);
+      drawFoot(scene);
+    }
+
+    function addNose(scene) {
+      var nose = new THREE.Shape();
+      nose.arc(0, 0, 25, 0, 2 * Math.PI);
+      var noseGeometry = new THREE.ShapeGeometry(nose);
+      var noseMesh = new THREE.Mesh(noseGeometry, new THREE.MeshBasicMaterial({
+        color: 0xFF0000
+      }));
+      scene.add(noseMesh);
+      var noseEdge = new THREE.LineSegments(new THREE.EdgesGeometry(noseGeometry), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }));
+      scene.add(noseEdge);
+      var noseCenter = new THREE.Shape();
+      noseCenter.arc(0, 5, 10, 0, 2 * Math.PI);
+      var noseCenterGeometry = new THREE.ShapeGeometry(noseCenter);
+      var noseCenterMesh = new THREE.Mesh(noseCenterGeometry, new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF
+      }));
+      scene.add(noseCenterMesh);
+    }
+
+    function addLeftEye(scene) {
+      var ratio = 45 / 35;
+      var eyeShape = new THREE.Shape();
+      eyeShape.ellipse(-35, 55, 35, 35 * ratio, 0, 2 * Math.PI);
+      var eyeGeometry = new THREE.ShapeGeometry(eyeShape);
+      scene.add(new THREE.Mesh(eyeGeometry, new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF
+      })));
+      var eye = new THREE.LineSegments(new THREE.EdgesGeometry(eyeGeometry), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }));
+      scene.add(eye);
+      var pupilShape = new THREE.Shape();
+      pupilShape.ellipse(-20, 40, 10, 15, 0, 2 * Math.PI);
+      var pupilGeometry = new THREE.ShapeGeometry(pupilShape);
+      var pupil = new THREE.Mesh(pupilGeometry, new THREE.MeshBasicMaterial({
+        color: 0x000000
+      }));
+      scene.add(pupil);
+      var pupilCenterShape = new THREE.Shape();
+      pupilCenterShape.ellipse(-20, 40, 3, 1.5 * 3, 0, 2 * Math.PI);
+      var pupilCenterGeometry = new THREE.ShapeGeometry(pupilCenterShape);
+      var pupilCenter = new THREE.Mesh(pupilCenterGeometry, new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF
+      }));
+      scene.add(pupilCenter);
+    }
+
+    function addRightEye(scene) {
+      var eyeShape = new THREE.Shape();
+      eyeShape.ellipse(35, 55, 35, 45, 0, 2 * Math.PI);
+      var eyeGeometry = new THREE.ShapeGeometry(eyeShape);
+      scene.add(new THREE.Mesh(eyeGeometry, new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF
+      })));
+      var eye = new THREE.LineSegments(new THREE.EdgesGeometry(eyeGeometry), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }));
+      scene.add(eye);
+      var pupilCurve = new THREE.EllipseCurve(20, 40, 10, 10, 0, Math.PI);
+      var pupilPath = new THREE.Path(pupilCurve.getPoints(1000));
+      var pupilGeometry = pupilPath.createPointsGeometry(1000);
+      var pupilMaterial = new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      });
+      var pupil = new THREE.Line(pupilGeometry, pupilMaterial);
+      scene.add(pupil);
+    }
+
+    function addMustache(scene) {
+      var path = new THREE.Path();
+      path.moveTo(-150, 20);
+      path.lineTo(-35, -30);
+      path.moveTo(150, 20);
+      path.lineTo(35, -30);
+      path.moveTo(-160, -60);
+      path.lineTo(-40, -60);
+      path.moveTo(160, -60);
+      path.lineTo(40, -60);
+      path.moveTo(-150, -140);
+      path.lineTo(-35, -90);
+      path.moveTo(150, -140);
+      path.lineTo(35, -90);
+      var geometry = path.createPointsGeometry(1000);
+      var lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }));
+      scene.add(lines);
+    }
+
+    function addMouse(scene) {
+      var path = new THREE.Path();
+      path.moveTo(0, -25);
+      path.lineTo(0, -170);
+      var geometry = path.createPointsGeometry(5000);
+      var lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }))
+      scene.add(lines);
+      path = new THREE.Path();
+      path.ellipse(0, -70, 150, 100, Math.PI, 2 * Math.PI);
+      geometry = path.createPointsGeometry(5000);
+      lines = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }));
+      scene.add(lines);
+    }
+
+    function addHeadOutline(scene) {
+      var x1, y1,
+        x2, y2,
+        x3, y3,
+        x4, y4;
+      var cx1, cy1,
+        cx2, cy2,
+        cx3, cy3,
+        cx4, cy4,
+        cx5, cy5,
+        cx6, cy6;
+      x1 = -200,
+        y1 = -20;
+      x2 = 120,
+        y2 = -240;
+      x3 = x2 - 5,
+        y3 = y2;
+      x4 = 180,
+        y4 = -60;
+      cx1 = -176,
+        cy1 = 170;
+      cx2 = 210,
+        cy2 = -90;
+      cx3 = 210,
+        cy3 = -150;
+      cx4 = 190,
+        cy4 = -150;
+      cx5 = 180,
+        cy5 = -100;
+      cx6 = 170,
+        cy6 = 100;
+        /*
+      var shape = new THREE.Shape();
+      shape.moveTo(x1, y1);
+      shape.bezierCurveTo(cx1, cy1, -cx1, cy1, -x1, y1);
+      shape.bezierCurveTo(cx2, cy2, cx3, cy3, x2, y2);
+      shape.lineTo(x3, y3);
+      shape.bezierCurveTo(cx4, cy4, cx5, cy5, x4, y4);
+      shape.bezierCurveTo(cx6, cy6, -cx6, cy6, -x4, y4);
+      shape.bezierCurveTo(-cx5, cy5, -cx4, cy4, -x3, y3);
+      shape.lineTo(-x2, y2);
+      shape.bezierCurveTo(-cx2, cy3, -cx2, cy2, x1, y1);
+      var geometry1 = new THREE.ShapeGeometry(shape);
+      var mesh = new THREE.Mesh(geometry1, new THREE.MeshBasicMaterial({
+        color: 0x318DE3
+      }));
+      scene.add(mesh);
+      var geometry2 = shape.createPointsGeometry(5000);
+      var outline = new THREE.Line(geometry2, new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      }));
+      scene.add(outline);*/
+      var shape1 = new THREE.Shape();
+      shape1.moveTo(-x2, y2);
+      shape1.bezierCurveTo(-cx2, cy3, -cx2, cy2, x1, y1);
+      shape1.bezierCurveTo(cx1, cy1, -cx1, cy1, -x1, y1);
+      shape1.bezierCurveTo(cx2, cy2, cx3, cy3, x2, y2);
+      scene.add(new THREE.Mesh(new THREE.ShapeGeometry(shape1), new THREE.MeshBasicMaterial({color: 0x318DE3})));
+      scene.add(new THREE.Line(shape1.createPointsGeometry(5000), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+      var shape2 = new THREE.Shape();
+      shape2.moveTo(x3, y3);
+      shape2.bezierCurveTo(cx4, cy4, cx5, cy5, x4, y4);
+      shape2.bezierCurveTo(cx6, cy6, -cx6, cy6, -x4, y4);
+      shape2.bezierCurveTo(-cx5, cy5, -cx4, cy4, -x3, y3);
+      scene.add(new THREE.Mesh(new THREE.ShapeGeometry(shape2), new THREE.MeshBasicMaterial({color: 0xFFFFFF})));
+      scene.add(new THREE.Line(shape2.createPointsGeometry(5000), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+    }
+
+    function drawNeck(scene) {
+      var shape = new THREE.Shape();
+      var x1, y1,
+        x2, y2;
+      x1 = -125,
+        y1 = -240;
+      x2 = -x1,
+        y2 = y1 - 10;
+      shape.moveTo(x1, y1);
+      shape.lineTo(-x1, y1);
+      shape.lineTo(x2, y2);
+      shape.lineTo(-x2, y2);
+      shape.lineTo(x1, y1);
+      var geometry1 = new THREE.ShapeGeometry(shape);
+      scene.add(new THREE.Mesh(geometry1, new THREE.MeshBasicMaterial({
+        color: 0xFF0000
+      })));
+      var edges = new THREE.EdgesGeometry(geometry1);
+      scene.add(new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+    }
+
+    function drawRing(scene) {
+      var cx, cy;
+      cx = 0,
+        cy = -270 + 5;
+      var shape1 = new THREE.Shape();
+      shape1.arc(cx, cy, 20, 0, 2 * Math.PI);
+      scene.add(new THREE.Mesh(new THREE.ShapeGeometry(shape1), new THREE.MeshBasicMaterial({
+        color: 0xFFE22F
+      })));
+      scene.add(new THREE.Line(shape1.createPointsGeometry(1000), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+      var shape2 = new THREE.Shape();
+      shape2.arc(cx, cy, 6, 0, 2 * Math.PI);
+      scene.add(new THREE.Mesh(new THREE.ShapeGeometry(shape2), new THREE.MeshBasicMaterial({
+        color: 0x695844
+      })))
+      scene.add(new THREE.Line(shape2.createPointsGeometry(1000), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+      var shape3 = new THREE.Shape();
+      shape3.moveTo(0, cy - 6);
+      shape3.lineTo(cx, cy - 20);
+      scene.add(new THREE.LineSegments(shape3.createPointsGeometry(), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+      var shape4 = new THREE.Shape();
+      shape4.moveTo(cx - 17, cy + 13);
+      shape4.lineTo(-cx + 17, cy + 13);
+      shape4.lineTo(-cx + 20, cy + 10);
+      shape4.lineTo(cx - 20, cy + 10);
+      shape4.lineTo(cx - 16, cy + 13);
+      scene.add(new THREE.Line(shape4.createPointsGeometry(100), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+    }
+
+    function drawTummy(scene) {
+      var x1, y1,
+        x2, y2;
+      var cx1, cy1,
+        cx2, cy2;
+      x1 = -80,
+        y1 = -250;
+      x2 = -80,
+        y2 = -330;
+      cx1 = -250,
+        cy1 = -500;
+      cx2 = -80,
+        cy2 = -420;
+      var shape = new THREE.Shape();
+      shape.moveTo(x1, y1);
+      shape.bezierCurveTo(cx1, cy1, -cx1, cy1, -x1, y1);
+      var geometry1 = new THREE.ShapeGeometry(shape);
+      scene.add(new THREE.Mesh(geometry1, new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF
+      })));
+      scene.add(new THREE.Line(shape.createPointsGeometry(5000), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+      var pocketShape = new THREE.Shape();
+      pocketShape.moveTo(x2, y2);
+      pocketShape.bezierCurveTo(cx2, cy2, -cx2, cy2, -x2, y2);
+      scene.add(new THREE.LineLoop(pocketShape.createPointsGeometry(5000), new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 2
+      })));
+    }
+
+    function drawBody(scene) {
+      var x1, y1,
+        x2, y2,
+        x3, y3,
+        x4, y4,
+        x5, y5,
+        x6, y6,
+        x7, y7,
+        x8, y8;
+      var cx1, cy1,
+        cx2, cy2;
+      x1 = -120,
+      y1 = -240;
+      x2 = -190,
+      y2 = -210;
+      x3 = -210,
+      y3 = -230;
+      x4 = -130,
+      y4 = -300;
+      x5 = -130,
+      y5 = -480;
+      x6 = -x5,
+      y6 = y5;
+      x7 = 130,
+      y7 = -360;
+      x8 = 125,
+      y8 = -250;
+      cx1 = 200,
+      cy1 = -360;
+      cx2 = 200,
+      cy2 = -300;
+      var shape = new THREE.Shape();
+      shape.moveTo(x1, y1);
+      shape.bezierCurveTo(x2, y2 + 2, x1, y1 + 2, x2, y2);
+      shape.lineTo(x3, y3);
+      shape.bezierCurveTo(x3 + 10, y3 - 30, x4 - 10, y4, x4, y4);
+      shape.bezierCurveTo(x5 - 5, y5, x4 - 5, y4, x5, y5);
+      shape.bezierCurveTo(x6, y6 - 3, x5, y5 - 3, x6, y6);
+      shape.bezierCurveTo(x7 + 2, y7, x6 + 2, y6, x7, y7);
+      shape.bezierCurveTo(cx1, cy1, cx2, cy2, x8, y8);
+      scene.add(new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshBasicMaterial({color: 0x318DE3})));
+      shape.moveTo(x7, y7);
+      scene.add(new THREE.Line(shape.createPointsGeometry(5000), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+      var shape2 = new THREE.Shape();
+      shape2.moveTo(x7, y7);
+      shape2.lineTo(x7, y8 - 30);
+      scene.add(new THREE.Line(shape2.createPointsGeometry(5000), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+      var shape3 = new THREE.Shape();
+      shape3.moveTo(x4, y4);
+      shape3.lineTo(x4, y1 - 30);
+      scene.add(new THREE.Line(shape3.createPointsGeometry(5000), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+      var handShape = new THREE.Shape();
+      handShape.arc((x2 + x3) / 2, (y2 + y3) / 2, 25, 0, 2 * Math.PI);
+      var handGeometry = new THREE.ShapeGeometry(handShape);
+      scene.add(new THREE.Mesh(handGeometry, new THREE.MeshBasicMaterial({color: 0xFFFFFF})));
+      scene.add(new THREE.Line(new THREE.EdgesGeometry(handGeometry), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+    }
+    function drawFoot(scene) {
+      var x1, y1,
+        x2, y2,
+        x3, y3,
+        x4, y4,
+        x5, y5;
+      var cx1, cy1,
+        cx2, cy2,
+        cx3, cy3,
+        cx4, cy4,
+        cx5, cy5,
+        cx6, cy6;
+      x1 = 0,
+      y1 = -460;
+      x2 = 0,
+      y2 = -480;
+      x3 = -10,
+      y3 = -520;
+      x4 = -130,
+      y4 = y3;
+      x5 = -130,
+      y5 = y2;
+      var shape = new THREE.Shape();
+      shape.moveTo(x1 - 10, y1);
+      shape.lineTo(x1 + 10, y1);
+      shape.moveTo(x1, y1);
+      shape.moveTo(x1, y1);
+      shape.lineTo(x2, y2);
+      scene.add(new THREE.LineSegments(shape.createPointsGeometry(5000), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+      var leftFootShape = new THREE.Shape();
+      leftFootShape.moveTo(x2, y2);
+      leftFootShape.bezierCurveTo(x2 + 5, y3 + 5, x3 + 5, y3, x3, y3);
+      leftFootShape.bezierCurveTo(x3, y3 - 5, x4, y4 - 5, x4, y4);
+      leftFootShape.bezierCurveTo(x4 - 20, y4, x5 - 20, y5, x5, y5);
+      leftFootShape.lineTo(x2, y2);
+      var leftFootGeometry = new THREE.ShapeGeometry(leftFootShape);
+      scene.add(new THREE.Mesh(leftFootGeometry, new THREE.MeshBasicMaterial({color: 0xFFFFFF})));
+      scene.add(new THREE.LineSegments(new THREE.EdgesGeometry(leftFootGeometry), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+      var rightFootShape = new THREE.Shape();
+      rightFootShape.moveTo(x2, y2);
+      rightFootShape.bezierCurveTo(x2 - 5, y3 + 5, -x3 - 5, y3, -x3, y3);
+      rightFootShape.bezierCurveTo(-x3, y3 - 5, -x4, y4 - 5, -x4, y4);
+      rightFootShape.bezierCurveTo(-x4 + 20, y4, -x5 + 20, y5, -x5, y5);
+      rightFootShape.lineTo(x2, y2);
+      var rightFootGeometry = new THREE.ShapeGeometry(rightFootShape);
+      scene.add(new THREE.Mesh(rightFootGeometry, new THREE.MeshBasicMaterial({color: 0xFFFFFF})));
+      scene.add(new THREE.LineSegments(new THREE.EdgesGeometry(rightFootGeometry), new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2})));
+    }
+    var width = window.innerWidth,
+      height = window.innerHeight;
+    var scene = new THREE.Scene(),
+      camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 1, height / -1, 1, 100),
+      renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width, 2 * height);
+    renderer.setClearColor(0xffffff);
+    document.body.appendChild(renderer.domElement);
+    drawHead(scene);
+    camera.position.z = 100;
+    renderer.render(scene, camera);
+    window.scrollTo(0, height / 6 * 5);
+  </script>
+</body>
+
+</html>
